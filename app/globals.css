@@ -85,6 +85,19 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14
   opacity: 1;
   transform: translateY(0);
 }
+.about-section.about-motion-ready h2 span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(.34em);
+}
+.about-section.about-motion-ready.about-visible h2 span {
+  animation: about-letter-in 520ms cubic-bezier(.23,1,.32,1) both;
+}
+@keyframes about-letter-in {
+  from { opacity: 0; transform: translateY(.34em); }
+  to { opacity: 1; transform: translateY(0); }
+}
 @media (prefers-reduced-motion: reduce) {
   .about-section.about-motion-ready { opacity: 1; transform: none; transition: none; }
+  .about-section.about-motion-ready h2 span { opacity: 1; transform: none; animation: none; }
 }
