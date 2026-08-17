@@ -5,10 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { hero, library, type LibraryItem } from "../data/library";
 
 const shotSlides = [
-  { id: "shot-01", label: "Shot 01", note: "Image placeholder", tone: "linear-gradient(135deg, #4b4b4b, #161616)" },
-  { id: "shot-02", label: "Shot 02", note: "Image placeholder", tone: "linear-gradient(135deg, #6a625c, #1b1b1b)" },
-  { id: "shot-03", label: "Shot 03", note: "Image placeholder", tone: "linear-gradient(135deg, #3f4b4e, #121212)" },
-  { id: "shot-04", label: "Shot 04", note: "Image placeholder", tone: "linear-gradient(135deg, #5b515e, #151515)" },
+  { id: "shot-01", label: "Shot 01", note: "Editorial detail", image: "/shots/shot-01.jpg", tone: "linear-gradient(135deg, #4b4b4b, #161616)" },
+  { id: "shot-02", label: "Shot 02", note: "Nightlife", image: "/shots/shot-02.jpg", tone: "linear-gradient(135deg, #6a625c, #1b1b1b)" },
+  { id: "shot-03", label: "Shot 03", note: "Still life", image: "/shots/shot-03.jpg", tone: "linear-gradient(135deg, #3f4b4e, #121212)" },
+  { id: "shot-04", label: "Shot 04", note: "Portrait", image: "/shots/shot-04.jpg", tone: "linear-gradient(135deg, #5b515e, #151515)" },
+  { id: "shot-05", label: "Shot 05", note: "Portrait", image: "/shots/shot-05.jpg", tone: "linear-gradient(135deg, #33404a, #111)" },
+  { id: "shot-06", label: "Shot 06", note: "Event coverage", image: "/shots/shot-06.jpg", tone: "linear-gradient(135deg, #713125, #161616)" },
+  { id: "shot-07", label: "Shot 07", note: "Editorial portrait", image: "/shots/shot-07.jpg", tone: "linear-gradient(135deg, #6d7273, #171717)" },
+  { id: "shot-08", label: "Shot 08", note: "Food and lifestyle", image: "/shots/shot-08.jpg", tone: "linear-gradient(135deg, #63462d, #171717)" },
 ];
 
 function Nav() {
@@ -41,7 +45,7 @@ function ShotsSlideshow() {
     return () => window.clearInterval(timer);
   }, []);
   const move = (direction: number) => setActive((current) => (current + direction + shotSlides.length) % shotSlides.length);
-  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><p className="eyebrow">Still frames</p><h2 id="shots-title">Dev Kamera Shots</h2></div><div className="shots-controls"><button type="button" onClick={() => move(-1)} aria-label="Previous shot">‹</button><button type="button" onClick={() => move(1)} aria-label="Next shot">›</button></div></div><div className="shots-stage" aria-live="polite">{shotSlides.map((slide, index) => <div key={slide.id} className={`shot-slide ${index === active ? "is-active" : ""}`} style={{ backgroundImage: slide.tone }} aria-hidden={index !== active}><span className="shot-slide-label">{slide.label}</span><span className="shot-slide-note">{slide.note}</span></div>)}</div><div className="shots-dots" role="tablist" aria-label="Choose a shot">{shotSlides.map((slide, index) => <button key={slide.id} type="button" role="tab" aria-selected={index === active} aria-label={`Show ${slide.label}`} onClick={() => setActive(index)} />)}</div><p className="shots-note">Your images will live here. Replace each placeholder when the final selects are ready.</p></section>;
+  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><p className="eyebrow">Still frames</p><h2 id="shots-title">Dev Kamera Shots</h2></div><div className="shots-controls"><button type="button" onClick={() => move(-1)} aria-label="Previous shot">‹</button><button type="button" onClick={() => move(1)} aria-label="Next shot">›</button></div></div><div className="shots-stage" aria-live="polite">{shotSlides.map((slide, index) => <div key={slide.id} className={`shot-slide ${index === active ? "is-active" : ""}`} style={{ backgroundImage: slide.tone }} aria-hidden={index !== active}><img src={slide.image} alt={`${slide.label} by Dev Kamera`} loading={index === 0 ? "eager" : "lazy"} /><span className="shot-slide-label">{slide.label}</span><span className="shot-slide-note">{slide.note}</span></div>)}</div><div className="shots-dots" role="tablist" aria-label="Choose a shot">{shotSlides.map((slide, index) => <button key={slide.id} type="button" role="tab" aria-selected={index === active} aria-label={`Show ${slide.label}`} onClick={() => setActive(index)} />)}</div><p className="shots-note">Eight selected frames from the Dev Kamera archive.</p></section>;
 }
 
 function VideoModal({ item, onClose }: { item: LibraryItem; onClose: () => void }) {
