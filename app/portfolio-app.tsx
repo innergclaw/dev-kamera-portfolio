@@ -38,14 +38,7 @@ function Row({ label, items, variant, onSelect }: { label: string; items: Librar
 }
 
 function ShotsSlideshow() {
-  const [active, setActive] = useState(0);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % shotSlides.length), 4800);
-    return () => window.clearInterval(timer);
-  }, []);
-  const move = (direction: number) => setActive((current) => (current + direction + shotSlides.length) % shotSlides.length);
-  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><p className="eyebrow">Still frames</p><h2 id="shots-title">Dev Kamera Shots</h2></div><div className="shots-controls"><button type="button" onClick={() => move(-1)} aria-label="Previous shot">‹</button><button type="button" onClick={() => move(1)} aria-label="Next shot">›</button></div></div><div className="shots-stage" aria-live="polite">{shotSlides.map((slide, index) => <div key={slide.id} className={`shot-slide ${index === active ? "is-active" : ""}`} style={{ backgroundImage: slide.tone }} aria-hidden={index !== active}><img src={slide.image} alt={`${slide.label} by Dev Kamera`} loading={index === 0 ? "eager" : "lazy"} /><span className="shot-slide-label">{slide.label}</span><span className="shot-slide-note">{slide.note}</span></div>)}</div><div className="shots-dots" role="tablist" aria-label="Choose a shot">{shotSlides.map((slide, index) => <button key={slide.id} type="button" role="tab" aria-selected={index === active} aria-label={`Show ${slide.label}`} onClick={() => setActive(index)} />)}</div><p className="shots-note">Eight selected frames from the Dev Kamera archive.</p></section>;
+  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><p className="eyebrow">Still frames</p><h2 id="shots-title">Dev Kamera Shots</h2></div></div><div className="shots-grid">{shotSlides.map((slide, index) => <figure key={slide.id} className="shot-card" style={{ backgroundImage: slide.tone }}><img src={slide.image} alt={`${slide.label} by Dev Kamera`} loading={index < 3 ? "eager" : "lazy"} /><figcaption><strong>{slide.label}</strong><span>{slide.note}</span></figcaption></figure>)}</div><p className="shots-note">Eight selected frames from the Dev Kamera archive.</p></section>;
 }
 
 function VideoModal({ item, onClose }: { item: LibraryItem; onClose: () => void }) {
