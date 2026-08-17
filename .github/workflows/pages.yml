@@ -31,6 +31,12 @@ jobs:
         env:
           NEXT_BASE_PATH: /dev-kamera-portfolio
         run: npm run build
+      - name: Flatten project asset directory
+        run: |
+          if [ -d dist/client/dev-kamera-portfolio ]; then
+            cp -R dist/client/dev-kamera-portfolio/. dist/client/
+            rm -rf dist/client/dev-kamera-portfolio
+          fi
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
