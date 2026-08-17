@@ -21,7 +21,7 @@ const baseItems: LibraryItem[] = [
 
 export const library = {
   continueWatching: [baseItems[0], baseItems[1], baseItems[2], baseItems[3]],
-  originals: [baseItems[0], baseItems[1], baseItems[2], baseItems[3]],
+  originals: [baseItems[0], baseItems[1], baseItems[2], baseItems[3], baseItems[4]],
   topTen: [{ ...baseItems[2], rank: 1 }, { ...baseItems[4], rank: 2 }, { ...baseItems[0], rank: 3 }, { ...baseItems[5], rank: 4 }],
   newReleases: [baseItems[5], baseItems[3], baseItems[1], baseItems[4]],
 };

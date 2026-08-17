@@ -35,5 +35,22 @@ function VideoModal({ item, onClose }: { item: LibraryItem; onClose: () => void 
 export function PortfolioApp() {
   const [selected, setSelected] = useState<LibraryItem | null>(null);
   const [contactSent, setContactSent] = useState(false);
+  useEffect(() => {
+    const section = document.querySelector<HTMLElement>(".about-section");
+    if (!section) return;
+    section.classList.add("about-motion-ready");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      section.classList.add("about-visible");
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        section.classList.add("about-visible");
+        observer.disconnect();
+      }
+    }, { threshold: 0.18 });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
   return <main><Nav /><Hero onPlay={() => setSelected({ id: "hero", title: hero.title, synopsis: hero.synopsis, meta: hero.meta, thumbnail: "/thumbnails/hero.jpg", video: hero.video })} /><section id="library" className="library-shell originals-feature" aria-label="Dev Kamera Originals"><Row label="Dev Kamera Originals" items={library.originals} variant="original" onSelect={setSelected} /></section><section id="about" className="about-section"><h2>ABOUT DEV KAMERA</h2><p>DevKamera is a Philadelphia-based photographer and visual storyteller specializing in cinematic imagery that brings culture, creativity, and artistry to life. With a distinct eye for detail and composition, we transform everyday moments into striking visual experiences.</p></section><section id="work-with-me" className="work-section"><div className="work-intro"><p className="eyebrow">Work With Me</p><h2>Have a story worth shaping?</h2></div>{contactSent ? <div className="form-success" role="status"><strong>Message received.</strong><span>Thanks for reaching out. I’ll follow up with next steps.</span></div> : <form className="contact-form" onSubmit={(event) => { event.preventDefault(); setContactSent(true); }}><div className="form-grid"><label>Name<input name="name" required placeholder="Your name" /></label><label>Email<input type="email" name="email" required placeholder="you@example.com" /></label></div><div className="form-grid"><label>Project type<select name="project"><option>Portrait session</option><option>Brand story</option><option>Event coverage</option><option>Music / editorial</option><option>Other</option></select></label><label>Budget range<select name="budget"><option>Let’s discuss</option><option>$500–$1,500</option><option>$1,500–$3,000</option><option>$3,000+</option></select></label></div><label>Tell me about the project<textarea name="message" required rows={4} placeholder="What are you making, and when do you need it?" /></label><button className="button button-primary" type="submit">Send inquiry</button><small className="form-note">This demo form is ready to connect to your preferred email or form endpoint.</small></form>}</section><footer><span>© Dev Kamera</span><span>Not affiliated with any streaming service. Just built like one.</span><div><a href="https://instagram.com/">Instagram</a><a href="https://vimeo.com/">Vimeo</a><a href="https://youtube.com/">YouTube</a></div></footer>{selected && <VideoModal item={selected} onClose={() => setSelected(null)} />}</main>;
 }

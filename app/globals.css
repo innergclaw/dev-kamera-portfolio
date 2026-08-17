@@ -44,3 +44,47 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14
 .form-success { display: grid; gap: 8px; padding: 22px; border: 1px solid rgba(255,255,255,.18); border-radius: 7px; background: rgba(255,255,255,.06); }
 .form-success strong { font-size: 1.2rem; }
 .form-success span { color: #aaa; font-size: .82rem; }
+
+/* The inquiry area is intentionally lighter so the next action is unmistakable. */
+.work-section {
+  background: #fff;
+  color: #111;
+  border-color: rgba(0,0,0,.14);
+}
+.work-section .eyebrow,
+.work-section h2 { color: #111; }
+.work-section .contact-form label { color: #333; }
+.work-section .contact-form input,
+.work-section .contact-form select,
+.work-section .contact-form textarea {
+  background: #f4f4f4;
+  border-color: rgba(0,0,0,.18);
+  color: #111;
+}
+.work-section .contact-form input::placeholder,
+.work-section .contact-form textarea::placeholder { color: #777; }
+.work-section .contact-form input:focus,
+.work-section .contact-form select:focus,
+.work-section .contact-form textarea:focus {
+  background: #fff;
+  border-color: #111;
+}
+.work-section .contact-form select option { background: #fff; color: #111; }
+.work-section .button-primary { background: #111; color: #fff; }
+.work-section .form-note { color: #666; }
+.work-section .form-success { background: #f4f4f4; border-color: rgba(0,0,0,.14); }
+.work-section .form-success span { color: #666; }
+
+/* Reveal the About statement as it enters the reading frame. */
+.about-section.about-motion-ready {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 700ms cubic-bezier(.23,1,.32,1), transform 700ms cubic-bezier(.23,1,.32,1);
+}
+.about-section.about-motion-ready.about-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-section.about-motion-ready { opacity: 1; transform: none; transition: none; }
+}
