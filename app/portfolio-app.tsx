@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { hero, library, type LibraryItem } from "../data/library";
+import { HeroGalleryScrollAnimation } from "../components/blocks/hero-gallery-scroll-animation";
 
 const shotSlides = [
   { id: "shot-01", label: "Shot 01", note: "Editorial detail", image: "/shots/shot-01.jpg", tone: "linear-gradient(135deg, #4b4b4b, #161616)" },
@@ -42,7 +43,7 @@ function Row({ label, items, variant, onSelect }: { label: string; items: Librar
 }
 
 function ShotsSlideshow() {
-  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><a className="eyebrow shots-link" href="https://www.instagram.com/devkamera?igsh=MXBhOG94bXptenY1cg==" target="_blank" rel="noreferrer">View More Work On Instagram</a><h2 id="shots-title">Dev Kamera Shots</h2></div></div><div className="shots-grid">{shotSlides.map((slide, index) => <figure key={slide.id} className="shot-card" style={{ backgroundImage: slide.tone }}><img src={assetPath(slide.image)} alt={`${slide.label} by Dev Kamera`} loading={index < 3 ? "eager" : "lazy"} /><figcaption><strong>{slide.label}</strong><span>{slide.note}</span></figcaption></figure>)}</div><p className="shots-note">Eight selected frames from the Dev Kamera archive.</p></section>;
+  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><a className="eyebrow shots-link" href="https://www.instagram.com/devkamera?igsh=MXBhOG94bXptenY1cg==" target="_blank" rel="noreferrer">View More Work On Instagram</a><h2 id="shots-title">Dev Kamera Shots</h2></div></div><HeroGalleryScrollAnimation slides={shotSlides} /><p className="shots-note">Eight selected frames from the Dev Kamera archive.</p></section>;
 }
 
 function VideoModal({ item, onClose }: { item: LibraryItem; onClose: () => void }) {
@@ -63,7 +64,6 @@ export function PortfolioApp() {
   useEffect(() => {
     const section = document.querySelector<HTMLElement>(".about-section");
     const workSection = document.querySelector<HTMLElement>(".work-section");
-    const shotsSection = document.querySelector<HTMLElement>(".shots-section");
     const observers: IntersectionObserver[] = [];
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (section) {
@@ -92,22 +92,6 @@ export function PortfolioApp() {
         observer.observe(workSection);
         observers.push(observer);
       }
-    }
-    if (shotsSection) {
-      const shotCards = shotsSection.querySelectorAll<HTMLElement>(".shot-card");
-      shotsSection.classList.add("shots-motion-ready");
-      shotCards.forEach((card) => {
-        card.classList.add("shot-card-motion-ready");
-        if (reducedMotion) {
-          card.classList.add("shot-card-visible");
-          return;
-        }
-        const observer = new IntersectionObserver(([entry]) => {
-          card.classList.toggle("shot-card-visible", entry.isIntersecting);
-        }, { threshold: 0.18 });
-        observer.observe(card);
-        observers.push(observer);
-      });
     }
     return () => observers.forEach((observer) => observer.disconnect());
   }, []);
