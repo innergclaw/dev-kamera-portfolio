@@ -38,7 +38,7 @@ function Row({ label, items, variant, onSelect }: { label: string; items: Librar
 }
 
 function ShotsSlideshow() {
-  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><p className="eyebrow">Still frames</p><h2 id="shots-title">Dev Kamera Shots</h2></div></div><div className="shots-grid">{shotSlides.map((slide, index) => <figure key={slide.id} className="shot-card" style={{ backgroundImage: slide.tone }}><img src={slide.image} alt={`${slide.label} by Dev Kamera`} loading={index < 3 ? "eager" : "lazy"} /><figcaption><strong>{slide.label}</strong><span>{slide.note}</span></figcaption></figure>)}</div><p className="shots-note">Eight selected frames from the Dev Kamera archive.</p></section>;
+  return <section id="shots" className="shots-section" aria-labelledby="shots-title"><div className="shots-heading"><div><a className="eyebrow shots-link" href="https://www.instagram.com/devkamera?igsh=MXBhOG94bXptenY1cg==" target="_blank" rel="noreferrer">View More Work On Instagram</a><h2 id="shots-title">Dev Kamera Shots</h2></div></div><div className="shots-grid">{shotSlides.map((slide, index) => <figure key={slide.id} className="shot-card" style={{ backgroundImage: slide.tone }}><img src={slide.image} alt={`${slide.label} by Dev Kamera`} loading={index < 3 ? "eager" : "lazy"} /><figcaption><strong>{slide.label}</strong><span>{slide.note}</span></figcaption></figure>)}</div><p className="shots-note">Eight selected frames from the Dev Kamera archive.</p></section>;
 }
 
 function VideoModal({ item, onClose }: { item: LibraryItem; onClose: () => void }) {
@@ -59,10 +59,12 @@ export function PortfolioApp() {
   useEffect(() => {
     const section = document.querySelector<HTMLElement>(".about-section");
     const workSection = document.querySelector<HTMLElement>(".work-section");
+    const shotsSection = document.querySelector<HTMLElement>(".shots-section");
     const observers: IntersectionObserver[] = [];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (section) {
       section.classList.add("about-motion-ready");
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (reducedMotion) {
         section.classList.add("about-visible");
       } else {
         const observer = new IntersectionObserver(([entry]) => {
@@ -77,7 +79,7 @@ export function PortfolioApp() {
     }
     if (workSection) {
       workSection.classList.add("work-motion-ready");
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (reducedMotion) {
         workSection.classList.add("work-visible");
       } else {
         const observer = new IntersectionObserver(([entry]) => {
@@ -90,7 +92,23 @@ export function PortfolioApp() {
         observers.push(observer);
       }
     }
+    if (shotsSection) {
+      const shotCards = shotsSection.querySelectorAll<HTMLElement>(".shot-card");
+      shotsSection.classList.add("shots-motion-ready");
+      shotCards.forEach((card) => {
+        card.classList.add("shot-card-motion-ready");
+        if (reducedMotion) {
+          card.classList.add("shot-card-visible");
+          return;
+        }
+        const observer = new IntersectionObserver(([entry]) => {
+          card.classList.toggle("shot-card-visible", entry.isIntersecting);
+        }, { threshold: 0.18 });
+        observer.observe(card);
+        observers.push(observer);
+      });
+    }
     return () => observers.forEach((observer) => observer.disconnect());
   }, []);
-  return <main className={`portfolio-shell ${splashState === "done" ? "is-ready" : ""}`}>{splashState !== "done" && <div className={`splash-screen ${splashState === "leaving" ? "splash-screen-leaving" : ""}`} aria-hidden="true"><div className="splash-mark"><strong>Dev Kamera</strong><span>Originals</span></div><span className="splash-line" /></div>}<Nav /><Hero onPlay={() => setSelected({ id: "hero", title: hero.title, synopsis: hero.synopsis, meta: hero.meta, thumbnail: "/thumbnails/hero.jpg", video: hero.video })} /><section id="library" className="library-shell originals-feature" aria-label="Dev Kamera Originals"><Row label="Dev Kamera Originals" items={library.originals} variant="original" onSelect={setSelected} /></section><ShotsSlideshow /><section id="about" className="about-section"><h2 aria-label="ABOUT DEV KAMERA">{Array.from("ABOUT DEV KAMERA").map((character, index) => <span key={`${character}-${index}`} aria-hidden="true" style={{ animationDelay: `${index * 42}ms` }}>{character === " " ? "\u00a0" : character}</span>)}</h2><p>DevKamera is a Philadelphia-based photographer and visual storyteller specializing in cinematic imagery that brings culture, creativity, and artistry to life. With a distinct eye for detail and composition, we transform everyday moments into striking visual experiences.</p></section><section id="work-with-me" className="work-section"><div className="work-intro"><p className="eyebrow">Work With Me</p><h2>Have a story worth shaping?</h2></div>{contactSent ? <div className="form-success" role="status"><strong>Message received.</strong><span>Thanks for reaching out. I’ll follow up with next steps.</span></div> : <form className="contact-form" onSubmit={(event) => { event.preventDefault(); setContactSent(true); }}><div className="form-grid"><label>Name<input name="name" required placeholder="Your name" /></label><label>Email<input type="email" name="email" required placeholder="you@example.com" /></label></div><div className="form-grid"><label>Project type<select name="project"><option>Portrait session</option><option>Brand story</option><option>Event coverage</option><option>Music / editorial</option><option>Other</option></select></label><label>Budget range<select name="budget"><option>Let’s discuss</option><option>$500–$1,500</option><option>$1,500–$3,000</option><option>$3,000+</option></select></label></div><label>Tell me about the project<textarea name="message" required rows={4} placeholder="What are you making, and when do you need it?" /></label><button className="button button-primary" type="submit">Send inquiry</button><small className="form-note">This demo form is ready to connect to your preferred email or form endpoint.</small></form>}</section><footer><span>© Dev Kamera</span><span>Not affiliated with any streaming service. Just built like one.</span><div><a href="https://instagram.com/">Instagram</a><a href="https://vimeo.com/">Vimeo</a><a href="https://youtube.com/">YouTube</a></div></footer>{selected && <VideoModal item={selected} onClose={() => setSelected(null)} />}</main>;
+  return <main className={`portfolio-shell ${splashState === "done" ? "is-ready" : ""}`}>{splashState !== "done" && <div className={`splash-screen ${splashState === "leaving" ? "splash-screen-leaving" : ""}`} aria-hidden="true"><div className="splash-mark"><strong>Dev Kamera</strong><span>Originals</span></div><span className="splash-line" /></div>}<Nav /><Hero onPlay={() => setSelected({ id: "hero", title: hero.title, synopsis: hero.synopsis, meta: hero.meta, thumbnail: "/thumbnails/hero.jpg", video: hero.video })} /><section id="library" className="library-shell originals-feature" aria-label="Dev Kamera Originals"><Row label="Dev Kamera Originals" items={library.originals} variant="original" onSelect={setSelected} /></section><ShotsSlideshow /><section id="about" className="about-section"><h2 aria-label="ABOUT DEV KAMERA">{Array.from("ABOUT DEV KAMERA").map((character, index) => <span key={`${character}-${index}`} aria-hidden="true" style={{ animationDelay: `${index * 42}ms` }}>{character === " " ? "\u00a0" : character}</span>)}</h2><p>DevKamera is a Philadelphia-based photographer and visual storyteller specializing in cinematic imagery that brings culture, creativity, and artistry to life. With a distinct eye for detail and composition, we transform everyday moments into striking visual experiences.</p></section><section id="work-with-me" className="work-section"><div className="work-intro"><p className="eyebrow">Work With Me</p><h2>Have a story worth shaping?</h2></div>{contactSent ? <div className="form-success" role="status"><strong>Message received.</strong><span>Thanks for reaching out. I’ll follow up with next steps.</span></div> : <form className="contact-form" onSubmit={(event) => { event.preventDefault(); setContactSent(true); }}><div className="form-grid"><label>Name<input name="name" required placeholder="Your name" /></label><label>Email<input type="email" name="email" required placeholder="you@example.com" /></label></div><div className="form-grid"><label>Project type<select name="project"><option>Portrait session</option><option>Brand story</option><option>Event coverage</option><option>Music / editorial</option><option>Other</option></select></label><label>Budget range<select name="budget"><option>Let’s discuss</option><option>$500–$1,500</option><option>$1,500–$3,000</option><option>$3,000+</option></select></label></div><label>Tell me about the project<textarea name="message" required rows={4} placeholder="What are you making, and when do you need it?" /></label><button className="button button-primary" type="submit">Send inquiry</button><small className="form-note">This demo form is ready to connect to your preferred email or form endpoint.</small></form>}</section><footer><span>© Dev Kamera</span><span>Not affiliated with any streaming service. Just built like one.</span><div><a className="social-link" href="https://www.instagram.com/devkamera?igsh=MXBhOG94bXptenY1cg==" aria-label="Dev Kamera on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.7" /><circle cx="17.4" cy="6.7" r="1" fill="currentColor" /></svg><span>Instagram</span></a><a href="https://vimeo.com/">Vimeo</a><a href="https://youtube.com/">YouTube</a></div></footer>{selected && <VideoModal item={selected} onClose={() => setSelected(null)} />}</main>;
 }
