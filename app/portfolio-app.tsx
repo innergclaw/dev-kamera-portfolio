@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useRef, useState } from "react";
+import { Camera, Home, Mail, Menu, UserRound, X } from "lucide-react";
 import { hero, library, type LibraryItem } from "../data/library";
 import { HeroGalleryScrollAnimation } from "../components/blocks/hero-gallery-scroll-animation";
 
@@ -22,8 +23,9 @@ function assetPath(path: string) {
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 24); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
-  return <header className={`site-nav ${scrolled ? "site-nav-scrolled" : ""}`}><a className="wordmark" href="#top">Dev Kamera</a><nav aria-label="Primary navigation"><a href="#library">Library</a><a href="#about">About</a><a href="#work-with-me">Work With Me</a></nav></header>;
+  return <header className={`site-nav ${scrolled ? "site-nav-scrolled" : ""}`}><a className="wordmark" href="#top">Dev Kamera</a><div className={`flower-menu ${open ? "flower-menu-open" : ""}`}><button className="flower-menu-toggle" type="button" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} onClick={() => setOpen((value) => !value)}>{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button><nav className="flower-nav" aria-label="Primary navigation"><a className="flower-nav-item flower-nav-top" href="https://www.instagram.com/devkamera?igsh=MXBhOG94bXptenY1cg==" target="_blank" rel="noreferrer" onClick={() => setOpen(false)}><Camera aria-hidden="true" /><span>Instagram</span></a><a className="flower-nav-item flower-nav-left" href="#top" onClick={() => setOpen(false)}><Home aria-hidden="true" /><span>Home</span></a><a className="flower-nav-item flower-nav-right" href="#work-with-me" onClick={() => setOpen(false)}><Mail aria-hidden="true" /><span>Work With Me</span></a><a className="flower-nav-item flower-nav-bottom" href="#about" onClick={() => setOpen(false)}><UserRound aria-hidden="true" /><span>About</span></a></nav></div></header>;
 }
 
 function Hero({ onPlay }: { onPlay: () => void }) {
