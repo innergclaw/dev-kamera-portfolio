@@ -104,6 +104,17 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14
 .about-section.about-motion-ready.about-visible h2 span {
   animation: about-letter-in 520ms cubic-bezier(.23,1,.32,1) both;
 }
+.work-section.work-motion-ready .contact-form,
+.work-section.work-motion-ready .form-success {
+  opacity: 0;
+  transform: translateX(44px);
+  transition: opacity 680ms cubic-bezier(.23,1,.32,1), transform 680ms cubic-bezier(.23,1,.32,1);
+}
+.work-section.work-motion-ready.work-visible .contact-form,
+.work-section.work-motion-ready.work-visible .form-success {
+  opacity: 1;
+  transform: translateX(0);
+}
 @keyframes about-letter-in {
   from { opacity: 0; transform: translateY(.34em); }
   to { opacity: 1; transform: translateY(0); }
@@ -111,4 +122,6 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14
 @media (prefers-reduced-motion: reduce) {
   .about-section.about-motion-ready { opacity: 1; transform: none; transition: none; }
   .about-section.about-motion-ready h2 span { opacity: 1; transform: none; animation: none; }
+  .work-section.work-motion-ready .contact-form,
+  .work-section.work-motion-ready .form-success { opacity: 1; transform: none; transition: none; }
 }
