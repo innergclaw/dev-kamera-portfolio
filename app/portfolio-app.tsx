@@ -68,10 +68,7 @@ export function PortfolioApp() {
         section.classList.add("about-visible");
       } else {
         const observer = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting) {
-            section.classList.add("about-visible");
-            observer.disconnect();
-          }
+          section.classList.toggle("about-visible", entry.isIntersecting);
         }, { threshold: 0.18 });
         observer.observe(section);
         observers.push(observer);
